@@ -6,6 +6,9 @@ import json
 def extract_content(outer_html):
     companies_divs = outer_html.findall('.//div[@data-id]')
 
+    with open("target_fields_xpaths.json") as in_:
+        xpaths = json.load(in_)
+
     all_data = []
     for cdiv in companies_divs:
         cdata = dict()
@@ -19,11 +22,11 @@ def extract_content(outer_html):
         jobs = dict()
         for j_id, jdiv in enumerate(cdiv.findall(xpaths["jobs"])):
             jobs.update({j_id: jdiv.text_content()})
-        cdata.update(jobs)
+        cdata.update({"jobs": jobs})
         founders = dict()
         for f_id, fdiv in enumerate(cdiv.findall(xpaths["founders"])):
             founders.update({f_id: fdiv.text_content().strip()})
-        cdata.update(founders)
+        cdata.update({"founders": founders})
         all_data.append(cdata)
 
     return all_data
